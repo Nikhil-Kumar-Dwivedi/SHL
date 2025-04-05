@@ -6,6 +6,10 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import os
 
+# ✅ SET PAGE CONFIG HERE FIRST
+st.set_page_config(page_title="SHL Assessment Recommendation Engine", layout="wide")
+
+
 # File path for persistent changes
 CSV_FILE = "shl_catalogue.csv"
 
