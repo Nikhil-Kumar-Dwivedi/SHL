@@ -1,0 +1,74 @@
+# SHL Assessment Recommendation Engine – Project Report
+
+## 🎯 Objective
+
+To build an intelligent recommendation engine that matches job descriptions to SHL’s assessment catalogue and helps recruiters quickly find the most relevant tests.
+
+---
+
+## 🧩 Problem Breakdown
+
+- Recruiters often go through multiple assessments to match with job requirements manually.
+- This project solves this by analyzing job descriptions and providing the best-fit assessments automatically.
+
+---
+
+## ⚙️ Technical Approach
+
+1. **Text Preprocessing**:
+   - Combine “Assessment Name” and “Skills/Tags” columns.
+   - Tokenize job description using basic NLP cleanup.
+
+2. **Vectorization & Similarity**:
+   - Applied `TfidfVectorizer` to convert text into vectors.
+   - Used `cosine_similarity` from Scikit-learn to compute similarity scores between JD and assessment entries.
+
+3. **Result Filtering**:
+   - Filtered top 10 results.
+   - Applied a dynamic similarity threshold to identify top 2–3 best matches.
+
+4. **Backend Option (FastAPI)**:
+   - Created a REST API that accepts job descriptions and returns JSON results.
+   - Used `requests` to send JD to backend when “Use FastAPI” is checked.
+
+5. **Admin Functionality**:
+   - Add new assessments (live write to CSV).
+   - Delete old ones from a dropdown menu.
+
+---
+
+## 🛠 Tools & Libraries Used
+
+| Purpose         | Library/Tool      |
+|-----------------|------------------|
+| Frontend        | Streamlit        |
+| Backend (optional) | FastAPI       |
+| Data Handling   | Pandas           |
+| NLP & Similarity| Scikit-learn, NumPy |
+| Deployment      | Streamlit Cloud  |
+
+---
+
+## 🔍 Key Highlights
+
+- Admin Panel for real-time data changes
+- FastAPI integration for future API-based deployment
+- Streamlit UI for smooth user experience
+- Built-in CSV persistence, no need for DB
+- Lightweight, fast, and deployable in minutes
+
+---
+
+## 📢 Deployment
+
+- Hosted on [Streamlit Cloud](https://share.streamlit.io/)
+- API-ready with optional FastAPI backend
+- Simple, scalable, and easy to demonstrate
+
+---
+
+## 👤 Author
+
+**Nikhil**  
+AI/ML Internship Project  
+SHL Assessment Recommendation Engine  
