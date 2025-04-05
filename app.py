@@ -7,8 +7,8 @@ import numpy as np
 import os
 
 # ✅ SET PAGE CONFIG HERE FIRST
-st.set_page_config(page_title="SHL Assessment Recommendation Engine", layout="wide")
 
+st.set_page_config(page_title="SHL Assessment Recommendation Engine", layout="wide")
 
 # File path for persistent changes
 CSV_FILE = "shl_catalogue.csv"
@@ -24,7 +24,7 @@ def load_fresh_data():  # ⚡ Always fetches latest CSV content
 df = load_data()
 
 # Set up Streamlit page
-st.set_page_config(page_title="SHL Assessment Recommendation Engine", layout="wide")
+
 st.title("🧠 SHL Assessment Recommendation Engine")
 st.markdown("Enter a job description below and get smart assessment recommendations!")
 
