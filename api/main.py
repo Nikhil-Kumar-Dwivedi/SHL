@@ -60,11 +60,5 @@ def recommend(data: QueryRequest):
 
 
 
-
-
-
-
-
 # to run the API run the below line in terminal
 # uvicorn api.main:app --reload
-
