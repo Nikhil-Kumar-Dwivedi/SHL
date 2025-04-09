@@ -12,7 +12,6 @@ st.set_page_config(page_title="SHL Assessment Recommendation Engine", layout="wi
 
 
 
-
 CSV_FILE = "shl_catalogue.csv"
 
 
@@ -70,7 +69,7 @@ with st.sidebar:
 
     elif admin_action == "Delete Assessment":
         st.subheader("🗑️ Delete an Assessment")
-      
+        
         fresh_df = load_fresh_data()
         assessment_to_delete = st.selectbox("Select Assessment to Delete", fresh_df["Assessment Name"].unique())
 
@@ -93,7 +92,7 @@ if st.button("Get Recommendations"):
     if jd_text.strip() == "":
         st.warning("Please enter a job description or keywords.")
     elif use_backend:
- 
+   
         with st.spinner("Fetching recommendations from backend..."):
             try:
                 response = requests.post(
@@ -126,12 +125,12 @@ if st.button("Get Recommendations"):
 
 
     else:
-       
+        
         df["combined_text"] = df["Assessment Name"] + " " + df["Skills/Tags"]
         tfidf = TfidfVectorizer()
         tfidf_matrix = tfidf.fit_transform(df["combined_text"])
 
-    
+        
         keywords = [kw.strip() for kw in jd_text.lower().replace(",", " ").split() if kw.strip()]
         if not keywords:
             st.warning("No valid keywords found in your input.")
@@ -154,15 +153,17 @@ if st.button("Get Recommendations"):
             )
             results.insert(0, "S.No", range(1, len(results) + 1))
 
-             
+            
             dynamic_threshold = max(final_similarity[top_indices]) * 0.7
 
             best_matches = results[results["Similarity Score"] >= dynamic_threshold]
             if len(best_matches) < 10:
+                
                 best_matches = results.iloc[:3]
 
             other_matches = results.drop(best_matches.index).reset_index(drop=True)
 
+            
             st.markdown("### 🎯 Best Match for Your Job Description")
             st.dataframe(best_matches[[ 
                 "S.No",
@@ -174,6 +175,7 @@ if st.button("Get Recommendations"):
                 "Similarity Score"
             ]], use_container_width=True, hide_index=True)
 
+            
             if not other_matches.empty:
                 with st.expander("🔍 Show Similar Other Assessments", expanded=False):
                     st.markdown("### 🧠 Other Recommended Assessments")
