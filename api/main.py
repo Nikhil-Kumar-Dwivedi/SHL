@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from pydantic import BaseModel
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -7,22 +7,29 @@ import numpy as np
 
 app = FastAPI()
 
-# Load and prepare dataset
+
 df = pd.read_csv("shl_catalogue.csv")
 df["combined_text"] = df["Assessment Name"] + " " + df["Skills/Tags"]
 tfidf = TfidfVectorizer()
 tfidf_matrix = tfidf.fit_transform(df["combined_text"])
 
-class JDRequest(BaseModel):
-    job_description: str
+
+class QueryRequest(BaseModel):
+    query: str
+
+
+@app.get("/health")
+def health():
+    return {"status": "healthy"}
+
 
 @app.post("/recommend")
-async def recommend(data: JDRequest):
-    jd_text = data.job_description
-    keywords = [kw.strip() for kw in jd_text.lower().replace(",", " ").split() if kw.strip()]
+def recommend(data: QueryRequest):
+    query_text = data.query
+    keywords = [kw.strip() for kw in query_text.lower().split() if kw.strip()]
 
     if not keywords:
-        return {"message": "No valid keywords found in your input."}
+        return {"recommended_assessments": []}
 
     sim_scores = []
     for kw in keywords:
@@ -32,22 +39,23 @@ async def recommend(data: JDRequest):
 
     final_similarity = np.mean(sim_scores, axis=0)
     top_indices = final_similarity.argsort()[::-1][:10]
-    results = df.iloc[top_indices].copy()
-    results["Similarity Score"] = final_similarity[top_indices].round(2)
-    dynamic_threshold = max(final_similarity[top_indices]) * 0.7
-    best_matches = results[results["Similarity Score"] >= dynamic_threshold]
 
-    if len(best_matches) < 10:
-        best_matches = results.iloc[:4]
+    recommended = []
+    for idx in top_indices:
+        row = df.iloc[idx]
+        recommended.append({
+            "url": row["URL"],
+            "adaptive_support": row["Adaptive Support"],
+            "description": row["Assessment Name"],  
+            "duration": int(row["Duration (min)"]),
+            "remote_support": row["Remote Testing Support"],
+            "test_type": [row["Test Type"]] if pd.notna(row["Test Type"]) else []
+        })
 
-    best_matches = best_matches[[
-        "Assessment Name",
-        "Remote Testing Support",
-        "Adaptive Support",
-        "Duration (min)",
-        "Test Type",
-        "Similarity Score",
-        "URL"
-    ]]
+    return {"recommended_assessments": recommended}
 
-    return best_matches.to_dict(orient="records")
+
+
+# to run the API run the below line in terminal
+# uvicorn api.main:app --reload
+
