@@ -29,7 +29,7 @@ def recommend(data: QueryRequest):
     keywords = [kw.strip() for kw in query_text.lower().split() if kw.strip()]
 
     if not keywords:
-        return {"recommended_assessments": []}
+        return []
 
     sim_scores = []
     for kw in keywords:
@@ -44,15 +44,23 @@ def recommend(data: QueryRequest):
     for idx in top_indices:
         row = df.iloc[idx]
         recommended.append({
-            "url": row["URL"],
-            "adaptive_support": row["Adaptive Support"],
-            "description": row["Assessment Name"],  
-            "duration": int(row["Duration (min)"]),
-            "remote_support": row["Remote Testing Support"],
-            "test_type": [row["Test Type"]] if pd.notna(row["Test Type"]) else []
+            "Assessment Name": row["Assessment Name"],
+            "Remote Testing Support": row["Remote Testing Support"],
+            "Adaptive Support": row["Adaptive Support"],
+            "Duration (min)": int(row["Duration (min)"]),
+            "Test Type": row["Test Type"],
+            "Similarity Score": round(final_similarity[idx], 2),
+            "URL": row.get("URL", "")
         })
 
-    return {"recommended_assessments": recommended}
+    return recommended  
+
+
+
+
+# to run the API run the below line in terminal
+# uvicorn api.main:app --reload
+
 
 
 
