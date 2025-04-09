@@ -8,12 +8,6 @@ import numpy as np
 app = FastAPI()
 
 
-df = pd.read_csv("shl_catalogue.csv")
-df["combined_text"] = df["Assessment Name"] + " " + df["Skills/Tags"]
-tfidf = TfidfVectorizer()
-tfidf_matrix = tfidf.fit_transform(df["combined_text"])
-
-
 class QueryRequest(BaseModel):
     query: str
 
@@ -25,6 +19,13 @@ def health():
 
 @app.post("/recommend")
 def recommend(data: QueryRequest):
+    
+    df = pd.read_csv("shl_catalogue.csv")
+    df["combined_text"] = df["Assessment Name"] + " " + df["Skills/Tags"]
+    
+    tfidf = TfidfVectorizer()
+    tfidf_matrix = tfidf.fit_transform(df["combined_text"])
+
     query_text = data.query
     keywords = [kw.strip() for kw in query_text.lower().split() if kw.strip()]
 
@@ -53,13 +54,13 @@ def recommend(data: QueryRequest):
             "URL": row.get("URL", "")
         })
 
-    return recommended  
+    return recommended
 
 
 
 
-# to run the API run the below line in terminal
-# uvicorn api.main:app --reload
+
+
 
 
 
