@@ -131,7 +131,7 @@ if st.button("Get Recommendations"):
         with st.spinner("Fetching recommendations from backend..."):
             try:
                 response = requests.post(
-                    "http://127.0.0.1:8000/recommend",
+                    "https://shl-9hkt.onrender.com/docs#/",
                     json={"query": jd_text}
                 )
                 if response.status_code == 200:
